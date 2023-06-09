@@ -26,12 +26,6 @@ public class StoreDataHandler {
 	@Autowired
 	Function<String, List<StoreDataDto>> fetchStoreData;
 
-	/**
-	 * This function listens at endpoint "/api/spring-cosmos-nosql-fn-http-trigger".
-	 * Two ways to invoke it using "curl" command in bash: 1. curl -d "HTTP Body"
-	 * {your host}/api/spring-cosmos-nosql-fn-http-trigger 2. curl "{your
-	 * host}/api/spring-cosmos-nosql-fn-http-trigger?name=HTTP%20Query"
-	 */
 	@FunctionName("fetchStoreData")
 	public HttpResponseMessage execute(@HttpTrigger(name = "request", methods = {
 			HttpMethod.GET }, authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
