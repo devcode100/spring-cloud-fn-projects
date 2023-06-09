@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.springnosql</groupId>
+	<artifactId>spring-cosmos-nosql-fn</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>Azure Java Functions</name>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.12</version>
+		<relativePath />
+		<!-- lookup parent from repository -->
+	</parent>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>17</java.version>
+		<azure.functions.maven.plugin.version>1.26.0</azure.functions.maven.plugin.version>
+		<azure.functions.java.library.version>3.0.0</azure.functions.java.library.version>
+		<spring-boot-thin-layout.version>1.0.29.RELEASE</spring-boot-thin-layout.version>
+		<spring-cloud-azure.version>4.8.0</spring-cloud-azure.version>
+		<spring.cloud.function.dependencies>4.0.3</spring.cloud.function.dependencies>
+		<!-- Spring Boot start class! WARING: correct class must be set! -->
+		<start-class>com.app.main.MainApplicaion</start-class>
+		<functionAppName>spring-cosmos-nosql-fn</functionAppName>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-function-adapter-azure</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-function-web -->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-function-web</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.azure.spring/spring-cloud-azure-starter-data-cosmos -->
+		<dependency>
+			<groupId>com.azure.spring</groupId>
+			<artifactId>spring-cloud-azure-starter-data-cosmos</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-function-dependencies</artifactId>
+				<version>${spring.cloud.function.dependencies}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.azure.spring</groupId>
+				<artifactId>spring-cloud-azure-dependencies</artifactId>
+				<version>${spring-cloud-azure.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.microsoft.azure.functions</groupId>
+				<artifactId>azure-functions-java-library</artifactId>
+				<version>${azure.functions.java.library.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-functions-maven-plugin</artifactId>
+				<version>${azure.functions.maven.plugin.version}</version>
+				<configuration>
+					<!-- function app name -->
+					<appName>${functionAppName}</appName>
+					<!-- function app resource group -->
+					<resourceGroup>HVModernizationDEV</resourceGroup>
+					<!-- function app service plan name -->
+					<appServicePlanName>${functionAppName}-service-plan</appServicePlanName>
+					<!-- function app region-->
+					<!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-regions for all valid values -->
+					<region>eastus</region>
+					<!-- function pricingTier, default to be consumption if not specified -->
+					<!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-pricing-tiers for all valid values -->
+					<!-- <pricingTier></pricingTier> -->
+					<!-- Whether to disable application insights, default is false -->
+					<!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details for all valid configurations for application insights-->
+					<!-- <disableAppInsights></disableAppInsights> -->
+					<runtime>
+						<!-- runtime os, could be windows, linux or docker-->
+						<os>linux</os>
+						<javaVersion>17</javaVersion>
+					</runtime>
+					<funcPort>7073</funcPort>
+					<appSettings>
+						<property>
+							<name>FUNCTIONS_EXTENSION_VERSION</name>
+							<value>~4</value>
+						</property>
+					</appSettings>
+				</configuration>
+				<executions>
+					<execution>
+						<id>package-functions</id>
+						<goals>
+							<goal>package</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!--Remove obj folder generated by .NET SDK in maven clean-->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.springframework.boot.experimental</groupId>
+						<artifactId>spring-boot-thin-layout</artifactId>
+						<version>${spring-boot-thin-layout.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+</project>
