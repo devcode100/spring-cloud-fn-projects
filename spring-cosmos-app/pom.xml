@@ -21,16 +21,12 @@
 		<spring.cloud.function.dependencies>4.1.0</spring.cloud.function.dependencies>
 		<start-class>com.todo.main.MainApplicaion</start-class>
 		<functionAppName>spring-cosmos-app-fn</functionAppName>
+		<resourceGroup>CloudHackDev</resourceGroup>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-function-adapter-azure</artifactId>
-		</dependency>
-		<!-- opentelemetry -->
-		<dependency>
-			<groupId>io.opentelemetry.instrumentation</groupId>
-			<artifactId>opentelemetry-spring-boot-starter</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -48,6 +44,37 @@
 			<artifactId>spring-cloud-azure-starter-data-cosmos</artifactId>
 			<version>5.9.1</version>
 		</dependency>
+		<!-- opentelemetry -->
+		<dependency>
+			<groupId>io.opentelemetry.instrumentation</groupId>
+			<artifactId>opentelemetry-spring-boot-starter</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.opentelemetry.instrumentation/opentelemetry-logback-appender-1.0 -->
+		<dependency>
+			<groupId>io.opentelemetry.instrumentation</groupId>
+			<artifactId>opentelemetry-logback-appender-1.0</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.opentelemetry.instrumentation/opentelemetry-logback-mdc-1.0 -->
+		<dependency>
+			<groupId>io.opentelemetry.instrumentation</groupId>
+			<artifactId>opentelemetry-logback-mdc-1.0</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.opentelemetry.instrumentation/opentelemetry-instrumentation-annotations -->
+		<dependency>
+			<groupId>io.opentelemetry.instrumentation</groupId>
+			<artifactId>opentelemetry-instrumentation-annotations</artifactId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -56,11 +83,6 @@
 		<dependency>
 			<groupId>com.microsoft.azure.functions</groupId>
 			<artifactId>azure-functions-java-library</artifactId>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-logging</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -103,12 +125,13 @@
 					<!-- function app name -->
 					<appName>${functionAppName}</appName>
 					<!-- function app resource group -->
-					<resourceGroup>${ResourceGroup}</resourceGroup>
+					<resourceGroup>${resourceGroup}</resourceGroup>
 					<!-- function app service plan name -->
-					<appServicePlanName>${functionAppName}-service-plan</appServicePlanName>
+					<appServicePlanName>
+						${functionAppName}-service-plan</appServicePlanName>
 					<!-- function app region-->
 					<!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-regions for all valid values -->
-					<region>eastus</region>
+					<region>southindia</region>
 					<!-- function pricingTier, default to be consumption if not specified -->
 					<!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-pricing-tiers for all valid values -->
 					<!-- <pricingTier></pricingTier> -->
@@ -126,6 +149,10 @@
 						<property>
 							<name>FUNCTIONS_EXTENSION_VERSION</name>
 							<value>~4</value>
+						</property>
+						<property>
+							<name>MAIN_CLASS</name>
+							<value>com.todo.main.MainApplicaion</value>
 						</property>
 					</appSettings>
 				</configuration>
