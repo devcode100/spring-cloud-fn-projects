@@ -1,0 +1,18 @@
+FROM eclipse-temurin:17-jdk-jammy AS build-env
+WORKDIR /app
+COPY .mvn/ .mvn
+COPY mvnw pom.xml opentelemetry-javaagent.jar ./
+RUN ./mvnw dependency:go-offline
+COPY ./src ./src
+#COPY . /app
+RUN ./mvnw clean install -DskipTests
+
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+COPY --from=build-env /app/target/spring-cosmos-app-1.0-SNAPSHOT.jar ./app.jar
+COPY --from=build-env /app/opentelemetry-javaagent.jar ./opentelemetry-javaagent.jar
+
+RUN addgroup modulegroup; adduser --ingroup modulegroup --disabled-password moduleuser
+USER moduleuser
+EXPOSE 9000
+ENTRYPOINT ["java","-javaagent:./opentelemetry-javaagent.jar","-jar","./app.jar"]

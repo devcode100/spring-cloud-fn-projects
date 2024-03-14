@@ -20,7 +20,7 @@
 		<azure.functions.java.library.version>3.1.0</azure.functions.java.library.version>
 		<spring.cloud.function.dependencies>4.1.0</spring.cloud.function.dependencies>
 		<start-class>com.todo.main.MainApplicaion</start-class>
-		<functionAppName>spring-container-fn</functionAppName>
+		<functionAppName>spring-cosmos-app-fn</functionAppName>
 		<resourceGroup>CloudHackDev</resourceGroup>
 	</properties>
 	<dependencies>
@@ -43,11 +43,6 @@
 			<groupId>com.azure.spring</groupId>
 			<artifactId>spring-cloud-azure-starter-data-cosmos</artifactId>
 			<version>5.9.1</version>
-		</dependency>
-		<dependency>
-			<groupId>io.opentelemetry.instrumentation</groupId>
-			<artifactId>opentelemetry-instrumentation-annotations</artifactId>
-			<version>2.1.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
 		<dependency>
@@ -91,9 +86,9 @@
 					<appName>${functionAppName}</appName>
 					<!-- function app resource group -->
 					<resourceGroup>${resourceGroup}</resourceGroup>
-					<pricingTier>EP1</pricingTier>
+					<!-- function app service plan name -->
 					<appServicePlanName>
-						SC-APP-SP</appServicePlanName>
+						${functionAppName}-service-plan</appServicePlanName>
 					<!-- function app region-->
 					<!-- refers https://github.com/microsoft/azure-maven-plugins/wiki/Azure-Functions:-Configuration-Details#supported-regions for all valid values -->
 					<region>southindia</region>
@@ -107,10 +102,11 @@
 					<localSettingsJson>${project.basedir}/local.settings.json</localSettingsJson>
 					<runtime>
 						<!-- runtime os, could be windows, linux or docker-->
-						<os>docker</os>
-						<image>springazurefn.azurecr.io/spring-cosmos-app:latest</image>
-						<serverId>acr</serverId>
-						<registryUrl>https://springazurefn.azurecr.io</registryUrl>
+						<os>linux</os>
+						<javaVersion>17</javaVersion>
+						<image>[hub-user/]repo-name[:tag]</image>
+						<serverId>springazurefn.azurecr.io</serverId>
+						<registryUrl></registryUrl>
 					</runtime>
 					<appSettings>
 						<property>
@@ -120,10 +116,6 @@
 						<property>
 							<name>MAIN_CLASS</name>
 							<value>com.todo.main.MainApplicaion</value>
-						</property>
-						<property>
-							<name>JAVA_OPTS</name>
-							<value>-javaagent:/home/site/wwwroot/opentelemetry-javaagent.jar</value>
 						</property>
 					</appSettings>
 				</configuration>

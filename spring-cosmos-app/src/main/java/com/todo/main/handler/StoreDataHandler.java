@@ -7,6 +7,7 @@ import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.functions.ExecutionContext;
@@ -33,13 +34,17 @@ public class StoreDataHandler {
 	@Autowired
 	Function<String, List<StoreDataDto>> fetchStoreData;
 
+	@Value("${telemetry.endpoint}")
+	private String telemetryEndpoint;
+
 	@FunctionName("fetchStoreData")
-	@WithSpan(value = "AzureFnInvokeFetchStoreData", kind = SpanKind.SERVER)
+	@WithSpan(value = "/api/fetchStoreData", kind = SpanKind.SERVER)
 	public HttpResponseMessage execute(@HttpTrigger(name = "request", methods = {
 			HttpMethod.GET }, authLevel = AuthorizationLevel.ANONYMOUS) HttpRequestMessage<Optional<String>> request,
 			final ExecutionContext context) {
 		context.getLogger().info("Java HTTP trigger processed a request.");
 		logger.info("Invoked AzureFnInvokeFetchStoreData {}");
+		logger.debug("[[telemetryEndpoint]] {}", telemetryEndpoint);
 
 		// Parse query parameter
 		final String queryCategory = request.getQueryParameters().get("category");

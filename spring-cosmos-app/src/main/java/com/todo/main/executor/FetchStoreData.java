@@ -13,11 +13,12 @@ import com.todo.main.dto.StoreDataDto;
 import com.todo.main.repository.StoreRepository;
 
 import io.opentelemetry.api.trace.SpanKind;
+import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 
 @Component
 public class FetchStoreData implements Function<String, List<StoreDataDto>> {
-	
+
 	Logger logger = LoggerFactory.getLogger(FetchStoreData.class);
 
 	private final StoreRepository storeRepository;
@@ -29,8 +30,8 @@ public class FetchStoreData implements Function<String, List<StoreDataDto>> {
 	}
 
 	@Override
-	@WithSpan(value = "fetchStoreDataDBCall", kind = SpanKind.CLIENT)
-	public List<StoreDataDto> apply(String category) {
+	@WithSpan(value = "fetchStoreData", kind = SpanKind.CLIENT)
+	public List<StoreDataDto> apply(@SpanAttribute("category") String category) {
 		logger.info("Into fetchStoreDataDBCall {}");
 		List<StoreDataDto> storeDataDtos = new ArrayList<>();
 		final List<StoreData> storeDatas = storeRepository.findByCategory(category);

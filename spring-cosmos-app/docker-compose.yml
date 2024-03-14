@@ -1,0 +1,17 @@
+version: '1'
+services:
+  app:
+    image: spring-cosmos-app:latest
+    container_name: spring-cosmos-app
+    restart: always
+    ports:
+      - 2222:2222
+      - 80:80
+    environment:
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - OTEL_METRICS_EXPORTER=otlp
+      - OTEL_EXPORTER_OTLP_ENDPOINT=
+      - OTEL_EXPORTER_OTLP_HEADERS=Authorization=Api-Token
+      - OTEL_SERVICE_NAME=spring-cosmos-app
+      - JAVA_OPTS=-javaagent:/home/site/wwwroot/opentelemetry-javaagent.jar
